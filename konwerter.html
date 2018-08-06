@@ -1,0 +1,22 @@
+<html>
+    <title>E-mail database converter</title>
+    <head>
+		<meta charset="UTF-8">
+        <style type="text/css">
+            body {font-size: 14px;font-family:Tahoma;}
+            .formField { width: 400px; }
+        </style>
+    </head>
+    <body>
+        <h1>E-mail database converter</h1>
+        <div class="content">
+            <form name="convertForm" method="post" action="/converter.php">
+                <div class="desc">Give a path to a directory or a filename containing e-mails:<br/><br/></div>
+                <input type="text" name="emailPath" class="formField" />
+                <input type="submit" class="submitButton" value="Convert" />
+            </form>
+            <div class="result">
+            </div>
+        </div>
+    </body>
+</html>
