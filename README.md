@@ -8,4 +8,5 @@ Usage:
 3. If needed modify the path used in converter.html.
 
 If You run into out of memory problems I recommend setting memory_limit in php.ini to 16MB. 
-The tests were run on a rather large dataset of about 1.3GB with cases of rather long e-mails.
+You also may need to modify max_execution_time parameter to 360 seconds or longer in php.ini to be able to process a large dataset. 
+In my case I was running a 1.3GB+ dataset and the script took 5.6300687829653 minutes complete.

@@ -50,6 +50,8 @@ class EmailToCSVConverter {
 
     public function main() {
         // Main object
+        $time_start = microtime(true);
+
         if (isset($_POST['emailPath'])) {
 
             if (is_file($_POST['emailPath'])) {
@@ -74,15 +76,19 @@ class EmailToCSVConverter {
         }
         
         fclose($this->output_file_handle);
+        $time_end = microtime(true);
+
+        $execution_time = ($time_end - $time_start)/60;
 
         $this->result_to_screen();
-        // echo memory_get_peak_usage(TRUE)/1024/1024;
+        echo 'Max memory usage: ' . memory_get_peak_usage(TRUE)/1024/1024 . 'MB' . '<br />';
+        echo 'Script Execution time: ' . $execution_time;
         
     }
 
     public function result_to_screen() {
         if (file_exists($this->output_filename)) {
-            echo 'Download file: <a href="http://' . $_SERVER["HTTP_HOST"] . $this->get_script_path() . '/' .  $this->output_filename.'">http://' . $_SERVER["HTTP_HOST"] . $this->get_script_path() . $this->output_filename . '</a>';
+            echo 'Download file: <a href="http://' . $_SERVER["HTTP_HOST"] . $this->get_script_path() . '/' .  $this->output_filename.'">http://' . $_SERVER["HTTP_HOST"] . $this->get_script_path() . $this->output_filename . '</a><br /><br />';
         }
     }
 
