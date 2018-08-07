@@ -4,7 +4,6 @@
 
 class EmailToCSVConverter {
     // Sets standard parameters for converter
-    public $line = 0;
     public $field_delimeter = ';';
     public $string_delimeter = '"';
     public $output_filename = 'result.csv';
@@ -16,11 +15,9 @@ class EmailToCSVConverter {
     public $source_file_handle;
     public $row_content;
     public $row_content_text;
-    public $line_count;
     public $work_mode = "dirs";
     public $source_dir = "maildir";
-    public $config;
-    public $debug = false;
+    public $debug = true;
     public $source_headers = array('Message-ID: ', 'Date: ', 'From: ', 'To: ', 'Subject: ', 'Cc: ', 'Mime-Version: ', 
             'Content-Type: ', 'Content-Transfer-Encoding: ', 'Bcc: ', 'X-From: ', 'X-To: ', 'X-cc: ', 'X-bcc: ', 'X-Folder: ', 
             'X-Origin: ', 'X-FileName: ');
@@ -50,7 +47,9 @@ class EmailToCSVConverter {
 
     public function main() {
         // Main object
-        $time_start = microtime(true);
+        if ($this->debug == true) {
+            $time_start = microtime(true);
+        }
 
         if (isset($_POST['emailPath'])) {
 
@@ -76,13 +75,17 @@ class EmailToCSVConverter {
         }
         
         fclose($this->output_file_handle);
-        $time_end = microtime(true);
-
-        $execution_time = ($time_end - $time_start)/60;
+        
+        if ($this->debug == true) {
+            $time_end = microtime(true);
+            $execution_time = ($time_end - $time_start)/60;
+        }
 
         $this->result_to_screen();
-        echo 'Max memory usage: ' . memory_get_peak_usage(TRUE)/1024/1024 . 'MB' . '<br />';
-        echo 'Script Execution time: ' . round(($time_end - $time_start), 4) . ' seconds, ' . round($execution_time, 4) . ' minutes';
+        if ($this->debug == true) {
+            echo 'Max memory usage: ' . memory_get_peak_usage(TRUE)/1024/1024 . 'MB' . '<br />';
+            echo 'Script Execution time: ' . round(($time_end - $time_start), 4) . ' seconds, ' . round($execution_time, 4) . ' minutes';
+        }
         
     }
 
