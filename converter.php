@@ -70,7 +70,7 @@ class EmailToCSVConverter {
             $email = file_get_contents($this->source_filename);
             $this->process_email($email);
         } else if ($this->work_mode == 'dirs') {
-            $this->read_files();
+            $this->read_dir();
         }
         
         fclose($this->output_file_handle);
@@ -99,57 +99,17 @@ class EmailToCSVConverter {
         $this->row_content .= $this->file_headers;
     }
 
-    function read_dirs($dir, &$results = array()){
-        $files = scandir($dir);
-
-        foreach($files as $key => $value){
-            $path = realpath($dir . DIRECTORY_SEPARATOR . $value);
-            if(!is_dir($path)) {
-                $results[] = $path;
-            } else if($value != "." && $value != "..") {
-                $this->read_dirs($path, $results);
-                $results[] = $path;
-            }
-        }
-
-        return $results;
-    }
-
-    public function read_files() {
-        if ($handle = opendir($this->source_dir)) {
+    public function read_dir( $resource = NULL ) {
+        $resource = isset($resource) ? $resource : $this->source_dir;
+        
+        if ($handle = opendir($resource)) {
             while (false !== ($entry = readdir($handle))) {
-               if ($entry !== '..' && $entry !== '.') {
-                   if(is_dir($this->source_dir . "/" . $entry) === true){
-                       if($subhandle = opendir($this->source_dir . "/" . $entry)) {
-                           while (false !== ($subentry = readdir($subhandle))) {
-                                if($subentry != '.' && $subentry != '..') {
-                                    if(is_dir($this->source_dir . "/" . $entry . "/" . $subentry) === true){
-                                        if($subfilehandle = opendir($this->source_dir . "/" . $entry . "/". $subentry)) {
-                                            while (false !== ($subfileentry = readdir($subfilehandle))) {
-                                                if($subfileentry != '.' && $subfileentry != '..') {
-                                                    if($subfileentry != '.' && $subfileentry != '..' && is_file($this->source_dir . "/" . $entry . "/" . $subentry . "/" . $subfileentry)) {
-                                                        $email = file_get_contents($this->source_dir . "/" . $entry . "/" . $subentry . "/" . $subfileentry, FILE_USE_INCLUDE_PATH);
-                                                        $this->process_email($email);
-                                                    }
-                                                }
-                                            }
-                                        closedir($subfilehandle);
-                                        }
-                                    } else {
-                                        if($subentry != '.' && $subentry != '..' && is_file($this->source_dir . "/" . $entry . "/" . $subentry)) {
-                                            $email = file_get_contents($this->source_dir . "/" . $entry . "/" . $subentry, FILE_USE_INCLUDE_PATH);
-                                            $this->process_email($email);
-                                        }
-                                    }
-                                }
-                            }
-                        closedir($subhandle);
-                        } else {
-                            if($entry != '.' && $entry != '..' && is_file($this->source_dir . "/" . $entry)) {
-                                $email = file_get_contents($this->source_dir . "/" . $entry, FILE_USE_INCLUDE_PATH);
-                                $this->process_email($email);
-                            }
-                        }
+                if ($entry != '..' && $entry != '.') {
+                    if (is_file($resource . "/" . $entry)) {
+                        $email = file_get_contents($resource . "/" . $entry, FILE_USE_INCLUDE_PATH);
+                        $this->process_email($email);
+                    } else if (is_dir($resource . "/" . $entry)) {
+                        $this->read_dir($resource . "/" . $entry);
                     }
                 }
             }
