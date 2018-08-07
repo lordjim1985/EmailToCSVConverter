@@ -82,7 +82,7 @@ class EmailToCSVConverter {
 
         $this->result_to_screen();
         echo 'Max memory usage: ' . memory_get_peak_usage(TRUE)/1024/1024 . 'MB' . '<br />';
-        echo 'Script Execution time: ' . ($time_end - $time_start) . ' seconds, ' . $execution_time . ' minutes';
+        echo 'Script Execution time: ' . round(($time_end - $time_start), 4) . ' seconds, ' . round($execution_time, 4) . ' minutes';
         
     }
 
