@@ -76,6 +76,7 @@ class EmailToCSVConverter {
         fclose($this->output_file_handle);
 
         $this->result_to_screen();
+        // echo memory_get_peak_usage(TRUE)/1024/1024;
         
     }
 

@@ -6,3 +6,6 @@ Usage:
 1. Download the files and place them into your webserver directory.
 2. Launch using: http://localhost/converter.html
 3. If needed modify the path used in converter.html.
+
+If You run into out of memory problems I recommend setting memory_limit in php.ini to 16MB. 
+The tests were run on a rather large dataset of about 1.3GB with cases of rather long e-mails.
