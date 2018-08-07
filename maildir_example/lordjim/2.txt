@@ -1,0 +1,18 @@
+Message-ID: <17405752.1075849619581.JavaMail.evans@thyme>
+Date: Tue, 31 Jul 2001 06:06:00 -0700 (PDT)
+From: tester@test.com
+To: straus@test.com, 
+	straus_klaus@test.com
+Subject: Test e-mail
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: quoted-printable
+X-From: Jeff Dasovich
+X-To: Straus <straus@test.com>, "Straus Klaus" <straus_klaus@test.com>
+X-cc: 
+X-bcc: 
+X-Folder: 
+X-Origin: 
+X-FileName: 
+
+It's a test message

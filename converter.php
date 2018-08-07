@@ -115,7 +115,7 @@ class EmailToCSVConverter {
         return $results;
     }
 
-    public function read_files() {        
+    public function read_files() {
         if ($handle = opendir($this->source_dir)) {
             while (false !== ($entry = readdir($handle))) {
                if ($entry !== '..' && $entry !== '.') {
@@ -135,10 +135,20 @@ class EmailToCSVConverter {
                                             }
                                         closedir($subfilehandle);
                                         }
+                                    } else {
+                                        if($subentry != '.' && $subentry != '..' && is_file($this->source_dir . "/" . $entry . "/" . $subentry)) {
+                                            $email = file_get_contents($this->source_dir . "/" . $entry . "/" . $subentry, FILE_USE_INCLUDE_PATH);
+                                            $this->process_email($email);
+                                        }
                                     }
                                 }
                             }
                         closedir($subhandle);
+                        } else {
+                            if($entry != '.' && $entry != '..' && is_file($this->source_dir . "/" . $entry)) {
+                                $email = file_get_contents($this->source_dir . "/" . $entry, FILE_USE_INCLUDE_PATH);
+                                $this->process_email($email);
+                            }
                         }
                     }
                 }
