@@ -19,7 +19,6 @@ class EmailToCSVConverter {
     public $line_count;
     public $work_mode = "dirs";
     public $source_dir = "maildir";
-    public $server_address = "localhost";
     public $config;
     public $debug = false;
     public $source_headers = array('Message-ID: ', 'Date: ', 'From: ', 'To: ', 'Subject: ', 'Cc: ', 'Mime-Version: ', 
@@ -82,7 +81,7 @@ class EmailToCSVConverter {
 
     public function result_to_screen() {
         if (file_exists($this->output_filename)) {
-            echo 'Download file: <a href="http://localhost' . '/' . $this->get_script_path() . '/' .  $this->output_filename.'">http://' . $this->server_address . '/' . $this->get_script_path() . '/' . $this->output_filename . '</a>';
+            echo 'Download file: <a href="http://' . $_SERVER["HTTP_HOST"] . $this->get_script_path() . '/' .  $this->output_filename.'">http://' . $_SERVER["HTTP_HOST"] . $this->get_script_path() . $this->output_filename . '</a>';
         }
     }
 
@@ -514,7 +513,7 @@ class EmailToCSVConverter {
         $script_path = '';
         for ($i=0;$i<count($script_path_elements);$i++) {
             if ($i != ( count($script_path_elements) - 1 ) ) {
-                $script_path .= $script_path_elements[$i];
+                $script_path .= $script_path_elements[$i] . '/';
             }
         }
         return $script_path;
