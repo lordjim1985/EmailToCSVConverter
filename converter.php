@@ -207,8 +207,6 @@ class EmailToCSVConverter {
     }
 
     public function create_csv($processed_headers){
-        $count_nonmatches = 0;
-
         foreach ($processed_headers as $processed_headers_key => $processed_headers_value) {
             $matches = 0;
 
@@ -217,7 +215,7 @@ class EmailToCSVConverter {
                 if($cleaned_header_value == "" || $cleaned_header_value == " ") {
                     $cleaned_header_value = 0;
                 }
-                $this->row_content .= $this->string_delimeter . $cleaned_header_value;
+                $this->row_content .= $this->string_delimeter . trim($cleaned_header_value);
                 $matches++;
                 if ($this->date_found === false) {
                     $this->row_content .= $this->string_delimeter . $this->field_delimeter . $this->string_delimeter . 0;
@@ -229,7 +227,7 @@ class EmailToCSVConverter {
                 if($cleaned_header_value == "" || $cleaned_header_value == " ") {
                     $cleaned_header_value = 0;
                 }
-                $this->row_content .= $this->field_delimeter . $this->string_delimeter . $cleaned_header_value;
+                $this->row_content .= $this->field_delimeter . $this->string_delimeter . trim($cleaned_header_value);
                 $matches++;
                 if ($this->from_found === false) {
                     $this->row_content .= $this->string_delimeter . $this->field_delimeter . $this->string_delimeter . 0;
@@ -241,7 +239,7 @@ class EmailToCSVConverter {
                 if($cleaned_header_value == "" || $cleaned_header_value == " ") {
                     $cleaned_header_value = 0;
                 }
-                $this->row_content .= $this->field_delimeter . $this->string_delimeter . $cleaned_header_value;
+                $this->row_content .= $this->field_delimeter . $this->string_delimeter . trim($cleaned_header_value);
                 $matches++;
                 if ($this->to_found === false) {
                     $this->row_content .= $this->string_delimeter . $this->field_delimeter . $this->string_delimeter . 0;
@@ -253,7 +251,7 @@ class EmailToCSVConverter {
                 if($cleaned_header_value == "" || $cleaned_header_value == " ") {
                     $cleaned_header_value = 0;
                 }
-                $this->row_content .= $this->field_delimeter . $this->string_delimeter . $cleaned_header_value;
+                $this->row_content .= $this->field_delimeter . $this->string_delimeter . trim($cleaned_header_value);
                 $matches++;
                 if ($this->subject_found === false) {
                     $this->row_content .= $this->string_delimeter . $this->field_delimeter . $this->string_delimeter . 0;
@@ -265,7 +263,7 @@ class EmailToCSVConverter {
                 if($cleaned_header_value == "" || $cleaned_header_value == " ") {
                     $cleaned_header_value = 0;
                 }
-                $this->row_content .= $this->field_delimeter . $this->string_delimeter . $cleaned_header_value;
+                $this->row_content .= $this->field_delimeter . $this->string_delimeter . trim($cleaned_header_value);
                 $matches++;
                 if ($this->cc_found === false) {
                     $this->row_content .= $this->string_delimeter . $this->field_delimeter . $this->string_delimeter . 0;
@@ -277,7 +275,7 @@ class EmailToCSVConverter {
                 if($cleaned_header_value == "" || $cleaned_header_value == " ") {
                     $cleaned_header_value = 0;
                 }
-                $this->row_content .= $this->field_delimeter . $this->string_delimeter . $cleaned_header_value;
+                $this->row_content .= $this->field_delimeter . $this->string_delimeter . trim($cleaned_header_value);
                 $matches++;
                 if ($this->mimeversion_found === false) {
                     $this->row_content .= $this->string_delimeter . $this->field_delimeter . $this->string_delimeter . 0;
@@ -289,7 +287,7 @@ class EmailToCSVConverter {
                 if($cleaned_header_value == "" || $cleaned_header_value == " ") {
                     $cleaned_header_value = 0;
                 }
-                $this->row_content .= $this->field_delimeter . $this->string_delimeter . $cleaned_header_value;
+                $this->row_content .= $this->field_delimeter . $this->string_delimeter . trim($cleaned_header_value);
                 $matches++;
                 if ($this->contentype_found === false) {
                     $this->row_content .= $this->string_delimeter . $this->field_delimeter . $this->string_delimeter . 0;
@@ -301,7 +299,7 @@ class EmailToCSVConverter {
                 if($cleaned_header_value == "" || $cleaned_header_value == " ") {
                     $cleaned_header_value = 0;
                 }
-                $this->row_content .= $this->field_delimeter . $this->string_delimeter . $cleaned_header_value;
+                $this->row_content .= $this->field_delimeter . $this->string_delimeter . trim($cleaned_header_value);
                 $matches++;
                 if ($this->contenttransferencoding_found === false) {
                     $this->row_content .= $this->string_delimeter . $this->field_delimeter . $this->string_delimeter . 0;
@@ -313,7 +311,7 @@ class EmailToCSVConverter {
                 if($cleaned_header_value == "" || $cleaned_header_value == " ") {
                     $cleaned_header_value = 0;
                 }
-                $this->row_content .= $this->field_delimeter . $this->string_delimeter . $cleaned_header_value;
+                $this->row_content .= $this->field_delimeter . $this->string_delimeter . trim($cleaned_header_value);
                 $matches++;
                 if ($this->bcc_found === false) {
                     $this->row_content .= $this->string_delimeter . $this->field_delimeter . $this->string_delimeter . 0;
@@ -325,7 +323,7 @@ class EmailToCSVConverter {
                 if($cleaned_header_value == "" || $cleaned_header_value == " ") {
                     $cleaned_header_value = 0;
                 }                
-                $this->row_content .= $this->field_delimeter . $this->string_delimeter . $cleaned_header_value;
+                $this->row_content .= $this->field_delimeter . $this->string_delimeter . trim($cleaned_header_value);
                 $matches++;
                 if ($this->xfrom_found === false) {
                     $this->row_content .= $this->string_delimeter . $this->field_delimeter . $this->string_delimeter . 0;
@@ -337,7 +335,7 @@ class EmailToCSVConverter {
                 if($cleaned_header_value == "" || $cleaned_header_value == " ") {
                     $cleaned_header_value = 0;
                 }
-                $this->row_content .= $this->field_delimeter . $this->string_delimeter . $cleaned_header_value;
+                $this->row_content .= $this->field_delimeter . $this->string_delimeter . trim($cleaned_header_value);
                 $matches++;
                 if ($this->xto_found === false) {
                     $this->row_content .= $this->string_delimeter . $this->field_delimeter . $this->string_delimeter . 0;
@@ -349,7 +347,7 @@ class EmailToCSVConverter {
                 if($cleaned_header_value == "" || $cleaned_header_value == " ") {
                     $cleaned_header_value = 0;
                 }
-                $this->row_content .= $this->field_delimeter . $this->string_delimeter . $cleaned_header_value;
+                $this->row_content .= $this->field_delimeter . $this->string_delimeter . trim($cleaned_header_value);
                 $matches++;
                 if ($this->xcc_found === false) {
                     $this->row_content .= $this->string_delimeter . $this->field_delimeter . $this->string_delimeter . 0;
@@ -361,7 +359,7 @@ class EmailToCSVConverter {
                 if($cleaned_header_value == "" || $cleaned_header_value == " ") {
                     $cleaned_header_value = 0;
                 }
-                $this->row_content .= $this->field_delimeter . $this->string_delimeter . $cleaned_header_value;
+                $this->row_content .= $this->field_delimeter . $this->string_delimeter . trim($cleaned_header_value);
                 $matches++;
                 if ($this->xbcc_found === false) {
                     $this->row_content .= $this->string_delimeter . $this->field_delimeter . $this->string_delimeter . 0;
@@ -373,7 +371,7 @@ class EmailToCSVConverter {
                 if($cleaned_header_value == "" || $cleaned_header_value == " ") {
                     $cleaned_header_value = 0;
                 }
-                $this->row_content .= $this->field_delimeter . $this->string_delimeter . $cleaned_header_value;
+                $this->row_content .= $this->field_delimeter . $this->string_delimeter . trim($cleaned_header_value);
                 $matches++;
                 if ($this->xfolder_found === false) {
                     $this->row_content .= $this->string_delimeter . $this->field_delimeter . $this->string_delimeter . 0;
@@ -385,7 +383,7 @@ class EmailToCSVConverter {
                 if($cleaned_header_value == "" || $cleaned_header_value == " ") {
                     $cleaned_header_value = 0;
                 }
-                $this->row_content .= $this->field_delimeter . $this->string_delimeter . $cleaned_header_value;
+                $this->row_content .= $this->field_delimeter . $this->string_delimeter . trim($cleaned_header_value);
                 $matches++;
                 if ($this->xorigin_found === false) {
                     $this->row_content .= $this->string_delimeter . $this->field_delimeter . $this->string_delimeter . 0;
@@ -397,7 +395,7 @@ class EmailToCSVConverter {
                 if($cleaned_header_value == "" || $cleaned_header_value == " ") {
                     $cleaned_header_value = 0;
                 }
-                $this->row_content .= $this->field_delimeter . $this->string_delimeter . $cleaned_header_value;
+                $this->row_content .= $this->field_delimeter . $this->string_delimeter . trim($cleaned_header_value);
                 $matches++;
                 if ($this->xfilename_found === false) {
                     $this->row_content .= $this->string_delimeter . $this->field_delimeter . $this->string_delimeter . 0;
@@ -409,16 +407,14 @@ class EmailToCSVConverter {
                 if($cleaned_header_value == "" || $cleaned_header_value == " ") {
                     $cleaned_header_value = 0;
                 }
-                $this->row_content .= $this->field_delimeter . $this->string_delimeter . $cleaned_header_value;
+                $this->row_content .= $this->field_delimeter . $this->string_delimeter . trim($cleaned_header_value);
                 $matches++;
             }
 
             if ($matches == 0) {
                 $this->row_content = substr($this->row_content, 0, strlen($this->row_content)-2);
                 $this->row_content .= $this->remove_newlines($processed_headers_value);
-                if($count_nonmatches == 0) { $this->row_content .= $this->string_delimeter; }
             } else {
-                $count_nonmatches = 0;
                 $this->row_content .= $this->string_delimeter;
             }
 
