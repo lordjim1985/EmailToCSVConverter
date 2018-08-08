@@ -82,6 +82,7 @@ class EmailToCSVConverter {
         }
 
         $this->result_to_screen();
+
         if ($this->debug == true) {
             echo 'Max memory usage: ' . memory_get_peak_usage(TRUE)/1024/1024 . 'MB' . '<br />';
             echo 'Script Execution time: ' . round(($time_end - $time_start), 4) . ' seconds, ' . round($execution_time, 4) . ' minutes';
@@ -93,20 +94,6 @@ class EmailToCSVConverter {
         if (file_exists($this->output_filename)) {
             echo 'Download file: <a href="http://' . $_SERVER["HTTP_HOST"] . $this->get_script_path() . '/' .  $this->output_filename.'">http://' . $_SERVER["HTTP_HOST"] . $this->get_script_path() . $this->output_filename . '</a><br /><br />';
         }
-    }
-
-    public function process_description_headers(){
-        // Set description headers for CSV
-        for($i=0;$i < count($this->desc_headers);$i++) {
-            if($i != ( count($this->desc_headers) - 1 ) ) {
-                $this->file_headers .= $this->string_delimeter . $this->desc_headers[$i] . $this->string_delimeter . $this->field_delimeter;
-            } else {
-                $this->file_headers .= $this->string_delimeter . $this->desc_headers[$i] . $this->string_delimeter . $this->line_delimeter;
-            }
-
-        }
-
-        $this->row_content .= $this->file_headers;
     }
 
     public function read_dir( $resource = NULL ) {
@@ -125,6 +112,20 @@ class EmailToCSVConverter {
             }
             closedir($handle);
         }
+    }
+
+    public function process_description_headers(){
+        // Set description headers for CSV
+        for($i=0;$i < count($this->desc_headers);$i++) {
+            if($i != ( count($this->desc_headers) - 1 ) ) {
+                $this->file_headers .= $this->string_delimeter . $this->desc_headers[$i] . $this->string_delimeter . $this->field_delimeter;
+            } else {
+                $this->file_headers .= $this->string_delimeter . $this->desc_headers[$i] . $this->string_delimeter . $this->line_delimeter;
+            }
+
+        }
+
+        $this->row_content .= $this->file_headers;
     }
 
     public function process_email($email) {
@@ -215,7 +216,9 @@ class EmailToCSVConverter {
                 if($cleaned_header_value == "" || $cleaned_header_value == " ") {
                     $cleaned_header_value = 0;
                 }
+                
                 $this->row_content .= $this->string_delimeter . trim($cleaned_header_value);
+
                 $matches++;
                 if ($this->date_found === false) {
                     $this->row_content .= $this->string_delimeter . $this->field_delimeter . $this->string_delimeter . 0;
@@ -227,7 +230,9 @@ class EmailToCSVConverter {
                 if($cleaned_header_value == "" || $cleaned_header_value == " ") {
                     $cleaned_header_value = 0;
                 }
+                
                 $this->row_content .= $this->field_delimeter . $this->string_delimeter . trim($cleaned_header_value);
+                
                 $matches++;
                 if ($this->from_found === false) {
                     $this->row_content .= $this->string_delimeter . $this->field_delimeter . $this->string_delimeter . 0;
