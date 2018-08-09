@@ -3,6 +3,7 @@ import argparse
 import os
 import re
 import time
+import sys
 from datetime import datetime
 from pprint import pprint
 
@@ -19,9 +20,10 @@ class EmailToCSVConverter:
 	source_file_handle = ""
 	row_content = ""
 	empty_value = str(0)
-	work_mode = "dirs"
+	work_mode = False
 	source_dir = "maildir"
-	debug = True
+	debug = False
+	progress = False
 	source_headers = ['Message-ID: ', 'Date: ', 'From: ', 'To: ', 'Subject: ', 'Cc: ', 'Mime-Version: ', 'Content-Type: ', 'Content-Transfer-Encoding: ', 'Bcc: ', 'X-From: ', 'X-To: ', 'X-cc: ', 'X-bcc: ', 'X-Folder: ', 'X-Origin: ', 'X-FileName: ']
 	target_headers = ['Message-ID: ', 'Date: ', 'From: ', 'To: ', 'Subject: ', 'Cc: ', 'Mime-Version: ', 'Content-Type: ', 'Content-Transfer-Encoding: ', 'Bcc: ', 'X-from: ', 'X-to: ', 'X-cc: ', 'X-bcc: ', 'X-folder: ', 'X-origin: ', 'X-fileName: ']
 	desc_headers = ['Message-ID', 'Date', 'From', 'To', 'Subject', 'Cc', 'Mime-Version', 'Content-Type', 'Content-Transfer-Encoding', 'Bcc', 'X-from', 'X-to', 'X-cc', 'X-bcc', 'X-folder', 'X-origin', 'X-fileName', 'Message']
@@ -50,6 +52,7 @@ class EmailToCSVConverter:
 		
 		parser.add_argument('--input_filename', metavar='I', type=str, nargs='+', required=True, help='name of the input_filename / directory to process. Example: email.txt or maildir')
 		parser.add_argument('--output_filename', metavar='O', type=str, nargs='+', required=True, help='name of the output filename. Example: result.csv')
+		parser.add_argument('--progress', metavar='P', type=int, nargs='+', required=False, help='should progress bar be enabled ')
 		
 		args = parser.parse_args()
 
@@ -59,34 +62,77 @@ class EmailToCSVConverter:
 		self.source_filename = args.input_filename[0]
 		self.output_filename = args.output_filename[0]
 
-		if (os.path.isfile(args.input_filename[0])) :
-			self.work_mode = "file"
-			self.input_file_handle = open(args.input_filename[0])
+		try:		
+			if args.progress[0] == 1 :
+				self.progress = True
+			else :
+				self.progress = False
+		except: 
+			self.progress = False
 
-		if (os.path.isdir(args.input_filename[0])) :
-			self.work_mode = "dirs"
+		if os.path.exists(self.source_filename) :
 
-		self.output_file_handle = open(args.output_filename[0], "w")
-		self.processDescriptionHeaders()
+			if os.path.isfile(args.input_filename[0]) :
+				self.work_mode = "file"
+				self.input_file_handle = open(args.input_filename[0])
 
-		if (self.work_mode == "file") :
-			email = self.input_file_handle.read()
-			self.processEmail(email)
-			self.input_file_handle.close()
-		if (self.work_mode == "dirs") :
-			self.readDirectory(args.input_filename[0])
+			if os.path.isdir(args.input_filename[0]) :
+				self.work_mode = "dirs"
+
+			self.output_file_handle = open(args.output_filename[0], "w")
+			
+			if (self.debug == True) :
+				print "File " + self.output_filename + " created."
+
+			self.processDescriptionHeaders()
+
+			if (self.work_mode == "file") :
+				email = self.input_file_handle.read()
+				
+				if (self.debug == True) :
+					print "Processing file: " + self.input_filename
+				
+				self.processEmail(email)
+				self.input_file_handle.close()
+			if (self.work_mode == "dirs") :
+				self.processDirectory(args.input_filename[0])
+
+			self.output_file_handle.close()
+			print "Output file: " + self.output_filename + " written"
+
+		else :
+			print 'Requested directory or file does not exist'
 
 		if (self.debug == True) :
 			self.time_end = self.microtime(False);
 			self.execution_time = self.time_end - self.time_start;
 
-		print "File " + self.output_filename + " created."
-
 		if (self.debug == True) :
 			# print 'Max memory usage: ' + str(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss) + 'MB';
 			print "Script Execution time: " + '%.5f' % self.execution_time + " seconds, " + '%.5f' % (self.execution_time/60) + " minutes";
 
-		self.output_file_handle.close()
+	def update_progress(self, position, total):
+		barLength = 50 # Modify this to change the length of the progress bar
+		status = ""
+		
+		progress = position/total
+
+		if isinstance(progress, int):
+			progress = float(progress)
+		if not isinstance(progress, float):
+			progress = 0
+			status = "error: progress var must be float\r\n"
+		if progress < 0:
+			progress = 0
+			status = "Halt...\r\n"
+		if progress >= 1:
+			progress = 1
+			status = "Done...\r\n"
+		block = int(round(barLength*progress))
+		text = "\rPercent: [{0}] {1}% {2}".format( "#"*block + "-"*(barLength-block), progress*100, status)
+		
+		sys.stdout.write(text)
+		sys.stdout.flush()
 
 	def processDescriptionHeaders(self):
 		for key,val in enumerate(self.desc_headers) :
@@ -96,13 +142,32 @@ class EmailToCSVConverter:
 				self.row_content += self.string_delimeter + self.desc_headers[key] + self.string_delimeter + self.line_delimeter
 		self.writeToFile()
 
-	def readDirectory(self, dirname):
-		for dirpath, dirs, files in os.walk(dirname):
+	def processDirectory(self, dirname):
+		file_sum = 0
+		file_counter = 0
 
+		if self.progress == True :
+			print "Calculating amount of files"
+			for dirpath, dirs, files in os.walk(dirname):
+				for file in files:
+					if os.path.isfile(dirpath + "\\" + file) :
+						file_sum += 1
+
+		print "Converting..."
+		
+		if self.progress == True :
+			self.update_progress(file_counter, file_sum)
+
+		for dirpath, dirs, files in os.walk(dirname):
 			for file in files:
 				email_handle = open(dirpath + "\\" + file, "r")
+				if (self.debug == True) :
+					print "Processing file: " + dirpath + "\\" + file
 				email = email_handle.read()
 				self.processEmail(email)
+				file_counter += 1
+				if self.progress == True :
+					self.update_progress(float(file_counter), file_sum)
 				email_handle.close()
 
 	def processEmail(self, email):
@@ -359,7 +424,7 @@ class EmailToCSVConverter:
 			else :
 				self.row_content += self.string_delimeter
 
-			self.row_content = self.replaceDoubleSpaces(self.row_content)
+		self.row_content = self.replaceDoubleSpaces(self.row_content)
 
 	def replaceSemicolons(self, content):
 		return content.replace(";", "&#59;")
