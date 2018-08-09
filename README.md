@@ -14,4 +14,4 @@ In my case I was running a 1.3GB+ dataset and the script took 5.6300687829653 mi
 Usage (Python Version):
 
 1. Download converter.py
-2. Launch using: converter.py --input_filename <your source filename or directory example: input.txt or INPUT> --output_filename <your output filename example: output.csv>
+2. Launch using: converter.py --input_filename [your source filename or directory example: input.txt or INPUT] --output_filename [your output filename example: output.csv]
