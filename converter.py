@@ -173,11 +173,11 @@ class EmailToCSVConverter:
 		# print re.search(header + ': ' , headers)
 		# return re.search(header + ': ' , headers)
 		# return headers.find(header + ': ')
-		return headers.startswith(header)
+		return headers.startswith(header + ":")
 
 	def processHeaders(self, email_headers):
 		cleaned_headers = self.replaceTabs(email_headers)
-		cleaned_headers = self.replaceDoubleNewLines(cleaned_headers)
+		cleaned_headers = self.replaceExtraNewLines(cleaned_headers)
 
 		cleaned_headers = self.replaceSemicolons(cleaned_headers)
 		cleaned_headers = self.replaceQuotes(cleaned_headers)
@@ -207,6 +207,7 @@ class EmailToCSVConverter:
 				cleaned_header_value = self.removeHeader('Message-ID', processed_headers_value)
 				if cleaned_header_value == "" or cleaned_header_value == " " :
 					cleaned_header_value = 0
+
 				self.row_content += self.string_delimeter + str(cleaned_header_value).strip()
 
 				matches += 1
@@ -403,11 +404,17 @@ class EmailToCSVConverter:
 				matches += 1;
 
 			if matches == 0 :
-				if self.row_content[-5:] == '";"0"':
+				if self.row_content[-5:] == '";"' + self.empty_value + '"':
 					self.row_content = self.row_content[:-5]
-					self.row_content += self.removeNewLines(processed_headers_value) + ' ";"0"'
+					self.row_content += " " + processed_headers_value + ' ";"' + self.empty_value + '"'
+				else:
+					if self.row_content[-1:] == '"':
+						self.row_content = self.row_content[:-1]
+						self.row_content += " " + processed_headers_value + ' "'
 			else :
-				self.row_content += self.string_delimeter;
+				self.row_content += self.string_delimeter
+
+			self.row_content = self.replaceDoubleSpaces(self.row_content)
 
 	def replaceSemicolons(self, content):
 		return content.replace(";", "&#59;")
@@ -424,10 +431,13 @@ class EmailToCSVConverter:
 	def replaceTabs(self, content):
 		return content.replace("\t", " ")
 
-	def replaceDoubleNewLines(self, email_headers):
+	def replaceExtraNewLines(self, content):
 		#return re.sub("/\r\n\s+/m", " ", email_headers)
-		email_headers_cleaned = re.sub(r"\n\s+", " ", email_headers, flags=re.M)
-		return email_headers_cleaned.replace("  ", " ")
+		content_cleaned = re.sub(r"\n\s+", " ", content, flags=re.M)
+		return content_cleaned.replace("  ", " ")
+
+	def replaceDoubleSpaces(self, content):
+		return content.replace("  ", " ")
 
 	def replaceExtraNewLines(self, email_body):
 		return email_body.replace("\n\n", " ")

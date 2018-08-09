@@ -2,8 +2,17 @@ Message-ID: <17405752.1075849619581.JavaMail.evans@thyme>
 Date: Tue, 31 Jul 2001 06:06:00 -0700 (PDT)
 From: tester@test.com
 To: straus@test.com, 
-	straus_klaus@test.com
+	straus_klaus@test.com,
+error 1,
+error 2,
+error 3,
+error 4
 Subject: Test e-mail
+Cc: straus_raus@test.com, 
+ error 5,
+error 6,
+error 7,
+error 8
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: quoted-printable
