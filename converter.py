@@ -18,7 +18,7 @@ class EmailToCSVConverter:
 	file_contents = ""
 	source_file_handle = ""
 	row_content = ""
-	row_content_text = ""
+	empty_value = str(0)
 	work_mode = "dirs"
 	source_dir = "maildir"
 	debug = True
@@ -212,7 +212,7 @@ class EmailToCSVConverter:
 				matches += 1
 
 				if self.date_found == False :
-					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
+					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + self.empty_value
 
 			if processed_headers_value.startswith('Date:') != False :
 				cleaned_header_value = self.removeHeader('Date', processed_headers_value);
@@ -224,7 +224,7 @@ class EmailToCSVConverter:
 				matches += 1
 
 				if self.from_found == False :
-					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
+					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + self.empty_value
 
 			if processed_headers_value.startswith('From:') != False :
 				cleaned_header_value = self.removeHeader('From', processed_headers_value);
@@ -236,7 +236,7 @@ class EmailToCSVConverter:
 				matches += 1
 
 				if self.to_found == False :
-					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
+					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + self.empty_value
 
 			if processed_headers_value.startswith('To:') != False :
 				cleaned_header_value = self.removeHeader('To', processed_headers_value);
@@ -248,7 +248,7 @@ class EmailToCSVConverter:
 				matches += 1
 
 				if self.subject_found == False :
-					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
+					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + self.empty_value
 
 			if processed_headers_value.startswith('Subject:') != False :
 				cleaned_header_value = self.removeHeader('Subject', processed_headers_value);
@@ -259,7 +259,7 @@ class EmailToCSVConverter:
 				matches += 1
 
 				if self.cc_found == False :
-					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
+					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + self.empty_value
 
 			if processed_headers_value.startswith('Cc:') != False :
 				cleaned_header_value = self.removeHeader('Cc', processed_headers_value);
@@ -271,7 +271,7 @@ class EmailToCSVConverter:
 				matches += 1
 
 				if self.mimeversion_found == False :
-					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
+					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + self.empty_value
 
 			if processed_headers_value.startswith('Mime-Version:') != False :
 				cleaned_header_value = self.removeHeader('Mime-Version', processed_headers_value);
@@ -283,7 +283,7 @@ class EmailToCSVConverter:
 				matches += 1
 
 				if self.contenttype_found == False :
-					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
+					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + self.empty_value
 
 			if processed_headers_value.startswith('Content-Type:') != False :
 				cleaned_header_value = self.removeHeader('Content-Type', processed_headers_value);
@@ -295,7 +295,7 @@ class EmailToCSVConverter:
 				matches += 1
 
 				if self.contenttransferencoding_found == -1 :
-					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
+					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + self.empty_value
 
 			if processed_headers_value.startswith('Content-Transfer-Encoding:') != False :
 				cleaned_header_value = self.removeHeader('Content-Transfer-Encoding', processed_headers_value);
@@ -307,7 +307,7 @@ class EmailToCSVConverter:
 				matches += 1
 
 				if self.bcc_found == False :
-					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
+					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + self.empty_value
 
 			if processed_headers_value.startswith('Bcc:') != False :
 				cleaned_header_value = self.removeHeader('Bcc', processed_headers_value);
@@ -319,7 +319,7 @@ class EmailToCSVConverter:
 				matches += 1
 
 				if self.xfrom_found == False :
-					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
+					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + self.empty_value
 
 			if processed_headers_value.startswith('X-from:') != False :
 				cleaned_header_value = self.removeHeader('X-from', processed_headers_value);
@@ -331,7 +331,7 @@ class EmailToCSVConverter:
 				matches += 1
 
 				if self.xto_found == False :
-					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
+					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + self.empty_value
 
 			if processed_headers_value.startswith('X-to:') != False :
 				cleaned_header_value = self.removeHeader('X-to', processed_headers_value);
@@ -343,7 +343,7 @@ class EmailToCSVConverter:
 				matches += 1
 
 				if self.xcc_found == False :
-					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
+					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + self.empty_value
 
 			if processed_headers_value.startswith('X-cc:') != False :
 				cleaned_header_value = self.removeHeader('X-cc', processed_headers_value);
@@ -355,7 +355,7 @@ class EmailToCSVConverter:
 				matches += 1
 
 				if self.xbcc_found == False :
-					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
+					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + self.empty_value
 
 			if processed_headers_value.startswith('X-bcc:') != False :
 				cleaned_header_value = self.removeHeader('X-bcc', processed_headers_value);
@@ -367,7 +367,7 @@ class EmailToCSVConverter:
 				matches += 1
 
 				if self.xfolder_found == False :
-					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
+					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + self.empty_value
 
 			if processed_headers_value.startswith('X-folder:') != False :
 				cleaned_header_value = self.removeHeader('X-folder', processed_headers_value);
@@ -379,7 +379,7 @@ class EmailToCSVConverter:
 				matches += 1
 
 				if self.xorigin_found == False :
-					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
+					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + self.empty_value
 
 			if processed_headers_value.startswith('X-origin:') != False :
 				cleaned_header_value = self.removeHeader('X-origin', processed_headers_value);
@@ -391,7 +391,7 @@ class EmailToCSVConverter:
 				matches += 1
 
 				if self.xfilename_found == False :
-					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
+					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + self.empty_value
 
 			if processed_headers_value.startswith('X-fileName:') != False :
 				cleaned_header_value = self.removeHeader('X-fileName', processed_headers_value);
