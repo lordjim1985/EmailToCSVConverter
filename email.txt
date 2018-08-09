@@ -7,7 +7,7 @@ Subject: Test e-mail
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: quoted-printable
-X-From: Jeff Dasovich
+X-From: Straus
 X-To: Straus <straus@test.com>, "Straus Klaus" <straus_klaus@test.com>
 X-cc: 
 X-bcc: 
@@ -15,4 +15,4 @@ X-Folder:
 X-Origin: 
 X-FileName: 
 
-It's a test message
+It's a test message, a test message with quotes "  "and with semicons ; 

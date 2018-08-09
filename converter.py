@@ -54,7 +54,7 @@ class EmailToCSVConverter:
 		args = parser.parse_args()
 
 		if (self.debug == True) :
-			self.time_start = self.microtime(True)
+			self.time_start = self.microtime(False)
 
 		self.source_filename = args.input_filename[0]
 		self.output_filename = args.output_filename[0]
@@ -77,8 +77,8 @@ class EmailToCSVConverter:
 			self.readDirectory(args.input_filename[0])
 
 		if (self.debug == True) :
-			self.time_end = self.microtime(True);
-			self.execution_time = (self.time_end - self.time_start) / 60;
+			self.time_end = self.microtime(False);
+			self.execution_time = self.time_end - self.time_start;
 
 		print "File " + self.output_filename + " created."
 
@@ -108,7 +108,6 @@ class EmailToCSVConverter:
 	def processEmail(self, email):
 		email_contents = self.separateContent(email)
 		email_headers = email_contents[0]
-
 		processed_headers = self.processHeaders(email_headers)
 
 		self.searchForHeaders(processed_headers)
@@ -132,28 +131,49 @@ class EmailToCSVConverter:
 		self.writeToFile()
 
 	def searchForHeaders(self, processed_headers):
-		processed_headers = "\n".join(str(process_headers_value) for process_headers_value in processed_headers)
-
-		self.messageid_found = self.searchForHeader('Message-ID', processed_headers)
-		self.date_found = self.searchForHeader('Date', processed_headers)
-		self.from_found = self.searchForHeader('From', processed_headers)
-		self.to_found = self.searchForHeader('To', processed_headers)
-		self.subject_found = self.searchForHeader('Subject', processed_headers)
-		self.cc_found = self.searchForHeader('Cc', processed_headers)
-		self.mimeversion_found = self.searchForHeader('Mime-Version', processed_headers)
-		self.contenttype_found = self.searchForHeader('Content-Type', processed_headers)
-		self.contenttransferencoding_found = self.searchForHeader('Content-Transfer-Encoding', processed_headers)
-		self.bcc_found = self.searchForHeader('Bcc', processed_headers)
-		self.xfrom_found = self.searchForHeader('X-from', processed_headers)
-		self.xto_found = self.searchForHeader('X-to', processed_headers)
-		self.xcc_found = self.searchForHeader('X-cc', processed_headers)
-		self.xbcc_found = self.searchForHeader('X-bcc', processed_headers)
-		self.xfolder_found = self.searchForHeader('X-folder', processed_headers)
-		self.xorigin_found = self.searchForHeader('X-origin', processed_headers)
-		self.xfilename_found = self.searchForHeader('X-fileName', processed_headers)
+		self.resetFoundValues()
+		# processed_headers_value = "\n".join(str(process_headers_value) for process_headers_value in processed_headers)
+		for processed_headers_key, processed_headers_value in enumerate(processed_headers) :
+			if self.searchForHeader('Message-ID', processed_headers_value):
+				self.messageid_found = self.searchForHeader('Message-ID', processed_headers_value)
+			if self.searchForHeader('Date', processed_headers_value):
+				self.date_found = self.searchForHeader('Date', processed_headers_value)
+			if self.searchForHeader('From', processed_headers_value):
+				self.from_found = self.searchForHeader('From', processed_headers_value)
+			if self.searchForHeader('To', processed_headers_value):
+				self.to_found = self.searchForHeader('To', processed_headers_value)
+			if self.searchForHeader('Subject', processed_headers_value):
+				self.subject_found = self.searchForHeader('Subject', processed_headers_value)
+			if self.searchForHeader('Cc', processed_headers_value):
+				self.cc_found = self.searchForHeader('Cc', processed_headers_value)
+			if self.searchForHeader('Mime-Version', processed_headers_value):
+				self.mimeversion_found = self.searchForHeader('Mime-Version', processed_headers_value)
+			if self.searchForHeader('Content-Type', processed_headers_value):
+				self.contenttype_found = self.searchForHeader('Content-Type', processed_headers_value)
+			if self.searchForHeader('Content-Transfer-Encoding', processed_headers_value):
+				self.contenttransferencoding_found = self.searchForHeader('Content-Transfer-Encoding', processed_headers_value)
+			if self.searchForHeader('Bcc', processed_headers_value):
+				self.bcc_found = self.searchForHeader('Bcc', processed_headers_value)
+			if self.searchForHeader('X-from', processed_headers_value):
+				self.xfrom_found = self.searchForHeader('X-from', processed_headers_value)
+			if self.searchForHeader('X-to', processed_headers_value):	
+				self.xto_found = self.searchForHeader('X-to', processed_headers_value)
+			if self.searchForHeader('X-cc', processed_headers_value):
+				self.xcc_found = self.searchForHeader('X-cc', processed_headers_value)
+			if self.searchForHeader('X-bcc', processed_headers_value):
+				self.xbcc_found = self.searchForHeader('X-bcc', processed_headers_value)
+			if self.searchForHeader('X-folder', processed_headers_value):
+				self.xfolder_found = self.searchForHeader('X-folder', processed_headers_value)
+			if self.searchForHeader('X-origin', processed_headers_value):
+				self.xorigin_found = self.searchForHeader('X-origin', processed_headers_value)
+			if self.searchForHeader('X-fileName', processed_headers_value):
+				self.xfilename_found = self.searchForHeader('X-fileName', processed_headers_value)
 
 	def searchForHeader(self, header, headers):
-		return headers.find(header + ':')
+		# print re.search(header + ': ' , headers)
+		# return re.search(header + ': ' , headers)
+		# return headers.find(header + ': ')
+		return headers.startswith(header)
 
 	def processHeaders(self, email_headers):
 		cleaned_headers = self.replaceTabs(email_headers)
@@ -167,7 +187,7 @@ class EmailToCSVConverter:
 		normalized_headers = self.normalizeHeaders(cleaned_headers)
 		
 		separated_headers = self.separateHeaders(normalized_headers)
-		
+
 		return separated_headers
 
 	def processBody(self, email_body):
@@ -183,19 +203,18 @@ class EmailToCSVConverter:
 		for process_headers_key, processed_headers_value in enumerate(processed_headers) :
 			matches = 0;
 
-			if processed_headers_value.find('Message-ID:') != -1 :
+			if processed_headers_value.startswith('Message-ID:') != False :
 				cleaned_header_value = self.removeHeader('Message-ID', processed_headers_value)
 				if cleaned_header_value == "" or cleaned_header_value == " " :
 					cleaned_header_value = 0
-
 				self.row_content += self.string_delimeter + str(cleaned_header_value).strip()
 
 				matches += 1
 
-				if self.date_found == -1 :
+				if self.date_found == False :
 					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
 
-			if processed_headers_value.find('Date:') != -1 :
+			if processed_headers_value.startswith('Date:') != False :
 				cleaned_header_value = self.removeHeader('Date', processed_headers_value);
 				if cleaned_header_value == "" or cleaned_header_value == " " :
 					cleaned_header_value = 0
@@ -204,10 +223,10 @@ class EmailToCSVConverter:
 
 				matches += 1
 
-				if self.from_found == -1 :
+				if self.from_found == False :
 					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
 
-			if processed_headers_value.find('From:') != -1 :
+			if processed_headers_value.startswith('From:') != False :
 				cleaned_header_value = self.removeHeader('From', processed_headers_value);
 				if cleaned_header_value == "" or cleaned_header_value == " " :
 					cleaned_header_value = 0
@@ -216,10 +235,10 @@ class EmailToCSVConverter:
 
 				matches += 1
 
-				if self.to_found == -1 :
+				if self.to_found == False :
 					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
 
-			if processed_headers_value.find('To:') != -1 :
+			if processed_headers_value.startswith('To: ') != False :
 				cleaned_header_value = self.removeHeader('To', processed_headers_value);
 				if cleaned_header_value == "" or cleaned_header_value == " " :
 					cleaned_header_value = 0
@@ -228,22 +247,21 @@ class EmailToCSVConverter:
 
 				matches += 1
 
-				if self.subject_found == -1 :
+				if self.subject_found == False :
 					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
 
-			if processed_headers_value.find('Subject:') != -1 :
+			if processed_headers_value.startswith('Subject: ') != False :
 				cleaned_header_value = self.removeHeader('Subject', processed_headers_value);
 				if cleaned_header_value == "" or cleaned_header_value == " " :
 					cleaned_header_value = 0
-
 				self.row_content += self.field_delimeter + self.string_delimeter + str(cleaned_header_value).strip()
 
 				matches += 1
 
-				if self.cc_found == -1 :
+				if self.cc_found == False :
 					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
 
-			if processed_headers_value.find('Cc:') != -1 :
+			if processed_headers_value.startswith('Cc:') != False :
 				cleaned_header_value = self.removeHeader('Cc', processed_headers_value);
 				if cleaned_header_value == "" or cleaned_header_value == " " :
 					cleaned_header_value = 0
@@ -252,10 +270,10 @@ class EmailToCSVConverter:
 
 				matches += 1
 
-				if self.mimeversion_found == -1 :
+				if self.mimeversion_found == False :
 					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
 
-			if processed_headers_value.find('Mime-Version:') != -1 :
+			if processed_headers_value.startswith('Mime-Version:') != False :
 				cleaned_header_value = self.removeHeader('Mime-Version', processed_headers_value);
 				if cleaned_header_value == "" or cleaned_header_value == " " :
 					cleaned_header_value = 0
@@ -264,10 +282,10 @@ class EmailToCSVConverter:
 
 				matches += 1
 
-				if self.contenttype_found == -1 :
+				if self.contenttype_found == False :
 					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
 
-			if processed_headers_value.find('Content-Type:') != -1 :
+			if processed_headers_value.startswith('Content-Type:') != False :
 				cleaned_header_value = self.removeHeader('Content-Type', processed_headers_value);
 				if cleaned_header_value == "" or cleaned_header_value == " " :
 					cleaned_header_value = 0
@@ -279,7 +297,7 @@ class EmailToCSVConverter:
 				if self.contenttransferencoding_found == -1 :
 					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
 
-			if processed_headers_value.find('Content-Transfer-Encoding:') != -1 :
+			if processed_headers_value.startswith('Content-Transfer-Encoding:') != False :
 				cleaned_header_value = self.removeHeader('Content-Transfer-Encoding', processed_headers_value);
 				if cleaned_header_value == "" or cleaned_header_value == " " :
 					cleaned_header_value = 0
@@ -288,10 +306,10 @@ class EmailToCSVConverter:
 
 				matches += 1
 
-				if self.bcc_found == -1 :
+				if self.bcc_found == False :
 					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
 
-			if processed_headers_value.find('Bcc:') != -1 :
+			if processed_headers_value.startswith('Bcc:') != False :
 				cleaned_header_value = self.removeHeader('Bcc', processed_headers_value);
 				if cleaned_header_value == "" or cleaned_header_value == " " :
 					cleaned_header_value = 0
@@ -300,10 +318,10 @@ class EmailToCSVConverter:
 
 				matches += 1
 
-				if self.xfrom_found == -1 :
+				if self.xfrom_found == False :
 					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
 
-			if processed_headers_value.find('X-from:') != -1 :
+			if processed_headers_value.startswith('X-from:') != False :
 				cleaned_header_value = self.removeHeader('X-from', processed_headers_value);
 				if cleaned_header_value == "" or cleaned_header_value == " " :
 					cleaned_header_value = 0
@@ -312,10 +330,10 @@ class EmailToCSVConverter:
 
 				matches += 1
 
-				if self.xto_found == -1 :
+				if self.xto_found == False :
 					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
 
-			if processed_headers_value.find('X-to:') != -1 :
+			if processed_headers_value.startswith('X-to:') != False :
 				cleaned_header_value = self.removeHeader('X-to', processed_headers_value);
 				if cleaned_header_value == "" or cleaned_header_value == " " :
 					cleaned_header_value = 0
@@ -324,10 +342,10 @@ class EmailToCSVConverter:
 
 				matches += 1
 
-				if self.xcc_found == -1 :
+				if self.xcc_found == False :
 					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
 
-			if processed_headers_value.find('X-cc:') != -1 :
+			if processed_headers_value.startswith('X-cc:') != False :
 				cleaned_header_value = self.removeHeader('X-cc', processed_headers_value);
 				if cleaned_header_value == "" or cleaned_header_value == " " :
 					cleaned_header_value = 0
@@ -336,10 +354,10 @@ class EmailToCSVConverter:
 
 				matches += 1
 
-				if self.xbcc_found == -1 :
+				if self.xbcc_found == False :
 					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
 
-			if processed_headers_value.find('X-bcc:') != -1 :
+			if processed_headers_value.startswith('X-bcc:') != False :
 				cleaned_header_value = self.removeHeader('X-bcc', processed_headers_value);
 				if cleaned_header_value == "" or cleaned_header_value == " " :
 					cleaned_header_value = 0
@@ -348,10 +366,10 @@ class EmailToCSVConverter:
 
 				matches += 1
 
-				if self.xfolder_found == -1 :
+				if self.xfolder_found == False :
 					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
 
-			if processed_headers_value.find('X-folder:') != -1 :
+			if processed_headers_value.startswith('X-folder:') != False :
 				cleaned_header_value = self.removeHeader('X-folder', processed_headers_value);
 				if cleaned_header_value == "" or cleaned_header_value == " " :
 					cleaned_header_value = 0
@@ -360,10 +378,10 @@ class EmailToCSVConverter:
 
 				matches += 1
 
-				if self.xorigin_found == -1 :
+				if self.xorigin_found == False :
 					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
 
-			if processed_headers_value.find('X-origin:') != -1 :
+			if processed_headers_value.startswith('X-origin:') != False :
 				cleaned_header_value = self.removeHeader('X-origin', processed_headers_value);
 				if cleaned_header_value == "" or cleaned_header_value == " " :
 					cleaned_header_value = 0
@@ -372,10 +390,10 @@ class EmailToCSVConverter:
 
 				matches += 1
 
-				if self.xfilename_found == -1 :
+				if self.xfilename_found == False :
 					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
 
-			if processed_headers_value.find('X-fileName:') != -1 :
+			if processed_headers_value.startswith('X-fileName:') != False :
 				cleaned_header_value = self.removeHeader('X-fileName', processed_headers_value);
 				if cleaned_header_value == "" or cleaned_header_value == " " :
 					cleaned_header_value = 0
@@ -439,9 +457,24 @@ class EmailToCSVConverter:
 		self.output_file_handle.write(self.row_content)
 		self.row_content = ""
 
-	def getScriptPath(self):
-		print "test"
-
+	def resetFoundValues(self):
+		self.messageid_found = False
+		self.date_found = False
+		self.from_found = False
+		self.to_found = False
+		self.subject_found = False
+		self.cc_found = False
+		self.mimeversion_found = False
+		self.contenttype_found = False
+		self.contenttransferencoding_found = False
+		self.bcc_found = False
+		self.xfrom_found = False
+		self.xto_found = False
+		self.xcc_found = False
+		self.xbcc_found = False
+		self.xfolder_found = False
+		self.xorigin_found = False
+		self.xfilename_found = False
 
 	def microtime(self, get_as_float = False) :
 		d = datetime.now()
@@ -450,6 +483,7 @@ class EmailToCSVConverter:
 			return t
 		else:
 			ms = d.microsecond / 1000000.
-		return '%f %d' % (ms, t)
+		# return '%f %d' % (ms, t)
+		return ms
 
 EmailToCSVConverter()
