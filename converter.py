@@ -238,7 +238,7 @@ class EmailToCSVConverter:
 				if self.to_found == False :
 					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
 
-			if processed_headers_value.startswith('To: ') != False :
+			if processed_headers_value.startswith('To:') != False :
 				cleaned_header_value = self.removeHeader('To', processed_headers_value);
 				if cleaned_header_value == "" or cleaned_header_value == " " :
 					cleaned_header_value = 0
@@ -250,7 +250,7 @@ class EmailToCSVConverter:
 				if self.subject_found == False :
 					self.row_content += self.string_delimeter + self.field_delimeter + self.string_delimeter + str(0)
 
-			if processed_headers_value.startswith('Subject: ') != False :
+			if processed_headers_value.startswith('Subject:') != False :
 				cleaned_header_value = self.removeHeader('Subject', processed_headers_value);
 				if cleaned_header_value == "" or cleaned_header_value == " " :
 					cleaned_header_value = 0
@@ -403,25 +403,26 @@ class EmailToCSVConverter:
 				matches += 1;
 
 			if matches == 0 :
-				self.row_content = self.row_content[:-2];
-				self.row_content += self.removeNewLines(processed_headers_value);
+				if self.row_content[-5:] == '";"0"':
+					self.row_content = self.row_content[:-5]
+					self.row_content += self.removeNewLines(processed_headers_value) + ' ";"0"'
 			else :
 				self.row_content += self.string_delimeter;
 
-	def replaceSemicolons(self, unified_headers):
-		return unified_headers.replace(";", "&#59;")
+	def replaceSemicolons(self, content):
+		return content.replace(";", "&#59;")
 
-	def replaceQuotes(self, unified_headers):
-		return unified_headers.replace('"', "&quot;")
+	def replaceQuotes(self, content):
+		return content.replace('"', "&quot;")
 
-	def replaceApos(self, unified_headers):
-		return unified_headers.replace("'", "&#39;")
+	def replaceApos(self, content):
+		return content.replace("'", "&#39;")
 
-	def replaceBackslashes(self, unified_headers):
-		return unified_headers.replace("\\", "&bsol;")
+	def replaceBackslashes(self, content):
+		return content.replace("\\", "&bsol;")
 
-	def replaceTabs(self, separated_headers):
-		return separated_headers.replace("\t", " ")
+	def replaceTabs(self, content):
+		return content.replace("\t", " ")
 
 	def replaceDoubleNewLines(self, email_headers):
 		#return re.sub("/\r\n\s+/m", " ", email_headers)
@@ -445,7 +446,7 @@ class EmailToCSVConverter:
 		return normalized_headers
 
 	def removeHeader(self, header_name, normalized_header_value):
-		return normalized_header_value.replace(header_name + ": ", "")
+		return normalized_header_value.replace(header_name + ":", "")
 
 	def trimHeader(self, header_value) :
 		header_value.strip()
@@ -477,13 +478,6 @@ class EmailToCSVConverter:
 		self.xfilename_found = False
 
 	def microtime(self, get_as_float = False) :
-		d = datetime.now()
-		t = time.mktime(d.timetuple())
-		if get_as_float:
-			return t
-		else:
-			ms = d.microsecond / 1000000.
-		# return '%f %d' % (ms, t)
-		return ms
+		return time.time()
 
 EmailToCSVConverter()
