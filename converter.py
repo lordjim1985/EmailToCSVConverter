@@ -56,8 +56,8 @@ class EmailToCSVConverter:
 		
 		args = parser.parse_args()
 
-		if (self.debug == True) :
-			self.time_start = self.microtime(False)
+		# if (self.debug == True) :
+		self.time_start = self.microtime(False)
 
 		self.source_filename = args.input_filename[0]
 		self.output_filename = args.output_filename[0]
@@ -103,13 +103,13 @@ class EmailToCSVConverter:
 		else :
 			print 'Requested directory or file does not exist'
 
-		if (self.debug == True) :
-			self.time_end = self.microtime(False);
-			self.execution_time = self.time_end - self.time_start;
+		# if (self.debug == True) :
+		self.time_end = self.microtime(False);
+		self.execution_time = self.time_end - self.time_start;
 
-		if (self.debug == True) :
-			# print 'Max memory usage: ' + str(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss) + 'MB';
-			print "Script Execution time: " + '%.5f' % self.execution_time + " seconds, " + '%.5f' % (self.execution_time/60) + " minutes";
+		# if (self.debug == True) :
+		# print 'Max memory usage: ' + str(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss) + 'MB';
+		print "Script Execution time: " + '%.5f' % self.execution_time + " seconds, " + '%.5f' % (self.execution_time/60) + " minutes";
 
 	def update_progress(self, position, total):
 		barLength = 50 # Modify this to change the length of the progress bar
